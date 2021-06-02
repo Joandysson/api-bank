@@ -14,6 +14,6 @@ RUN composer install --no-scripts --no-autoloader
 
 COPY ./src ./
 
-RUN composer dump-autoload --optimize
+RUN composer dump-autoload --optimize && composer run-script post-root-package-install
 
 RUN chown -R www-data:www-data "."
