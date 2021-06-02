@@ -4,13 +4,14 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AccountsTable extends Migration
+class UsersTable extends Migration
 {
-    private $table = 'accounts';
+
+    private $table = 'users';
 
     /**
      * Run the migrations.
-     *
+     *s
      * @return void
      */
     public function up()
@@ -19,11 +20,11 @@ class AccountsTable extends Migration
 
         Schema::create($this->table, function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->double('balance')->default(0);
+            $table->string('name', 100);
+            $table->string('email')->unique();
+            $table->string('cpf_cnpj', 14)->unique();
+            $table->string('password');
             $table->timestamps();
-            $table->softDeletes();
-            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 
