@@ -20,9 +20,9 @@ class UsersTable extends Migration
 
         Schema::create($this->table, function (Blueprint $table) {
             $table->id();
-            $table->string('name', 100);
+            $table->string('name', 150);
             $table->string('email')->unique();
-            $table->string('cpf_cnpj', 14)->unique();
+            $table->string('cpf_cnpj')->unique();
             $table->string('password');
             $table->timestamps();
         });

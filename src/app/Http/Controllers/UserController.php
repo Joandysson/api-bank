@@ -2,33 +2,35 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Client;
-use App\Utils\ClientUtils;
-use Laravel\Lumen\Http\Request;
+use App\Repositories\UserRepositoryInterface;
+use App\Utils\UserUtils;
+use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    protected $client;
+    protected $user;
 
-    public function __construct(Client $client)
+    public function __construct(UserRepositoryInterface $user)
     {
-        $this->client = $client;
+        $this->user = $user;
     }
 
     function index(Request $request)
     {
+        $data = $this->user->all();
+
+        return response()->json($data);
     }
 
-    function create(Request $request)
+    function store(Request $request)
     {
-
-        $request->validate(ClientUtils::storeRules(), ClientUtils::messages());
+        $this->validate($request, UserUtils::storeRules(), UserUtils::messages());
 
         try {
-            $data = $request->toArray();
-            $this->client::create($request->all());
-        } catch (\Throwable $th) {
-            //throw $th;
+            $data = $this->user->create($request->all());
+
+        } catch (\Exception $e) {
+            dd($e->getMessage());
         }
 
     }

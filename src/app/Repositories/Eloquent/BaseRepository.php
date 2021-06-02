@@ -4,13 +4,14 @@ namespace App\Repositories\Eloquent;
 
 use App\Repositories\EloquentRepositoryInterface;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 class BaseRepository implements EloquentRepositoryInterface
 {
     /**
      * @var Model
      */
-     protected $model;
+    protected $model;
 
     /**
      * BaseRepository constructor.
@@ -23,21 +24,31 @@ class BaseRepository implements EloquentRepositoryInterface
     }
 
     /**
-    * @param array $attributes
-    *
-    * @return Model
-    */
+     * @param array $attributes
+     *
+     * @return Model
+     */
     public function create(array $attributes): Model
     {
         return $this->model->create($attributes);
     }
 
     /**
-    * @param $id
-    * @return Model
-    */
+     * @param $id
+     * @return Model
+     */
     public function find($id): ?Model
     {
         return $this->model->find($id);
+    }
+
+    public function where(array $attributes): ?Model
+    {
+        return $this->model->where($attributes);
+    }
+
+    public function all(): Collection
+    {
+        return $this->model->all();
     }
 }

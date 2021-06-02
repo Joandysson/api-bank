@@ -16,10 +16,10 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public $incrementing = true;
 
     protected $fillable = [
-        'name', 'email', 'cpf_cnpj'
+        'name', 'email', 'cpf_cnpj', 'password'
     ];
 
-    protected $hidden = [
-        'password',
-    ];
+    // protected $hidden = [
+    //     'password',
+    // ];
 }
