@@ -2,14 +2,15 @@ version: '3.5'
 services:
     redis:
         image: sickp/alpine-redis:3.2.2
+        container_name: redis
         ports:
             - "6379:6379"
         networks:
             - ntw-api-bank
     db:
-        image: mariadb:latest
+        image: mariadb:10.6.1
         command: --default-authentication-plugin=mysql_native_password
-        container_name: mariadb
+        container_name: db
         restart: always
         environment:
             MYSQL_ROOT_PASSWORD: '12345678'
@@ -31,6 +32,10 @@ services:
     php:
         build: .
         container_name: php
+        # command: bash -c 'php artisan migrate'
+        depends_on:
+            - db
+            - redis
         volumes:
             - './src:/var/www/html/api'
             - './config/php.ini:/usr/local/etc/php/php.ini'
