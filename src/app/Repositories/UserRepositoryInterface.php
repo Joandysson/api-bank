@@ -15,5 +15,5 @@ interface UserRepositoryInterface
    public function update(array $attributes = [], array $options = []): bool;
    public function delete(): bool|null;
    public function save(array $attributes, array $options = []): Model;
-   public function createOrUpdate(array $attributes, ?int $id = null): bool;
+   public function createOrUpdate(array $attributes, ?int $id = null): bool|Model;
 }

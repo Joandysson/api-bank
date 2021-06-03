@@ -21,7 +21,7 @@ class BaseRepository implements EloquentRepositoryInterface
         return $this->model->create($attributes);
     }
 
-    public function createOrUpdate(array $attributes, ?int $id = null): bool
+    public function createOrUpdate(array $attributes, ?int $id = null): bool|Model
     {
         if($id) {
             $modelData = $this->model->find($id);
