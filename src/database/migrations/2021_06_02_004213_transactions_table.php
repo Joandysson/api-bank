@@ -21,7 +21,7 @@ class TransactionsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('account_id');
             $table->double('value')->default(0);
-            $table->unsignedBigInteger('account_to');
+            $table->unsignedBigInteger('account_to')->nullable();
             $table->timestamps();
             $table->softDeletes();
             $table->foreign('account_id')->references('id')->on('accounts');

@@ -8,10 +8,6 @@ class Account extends Model
 {
 
     protected $fillable = [
-        'client_id', 'balance'
-    ];
-
-    protected $hidden = [
-        'password',
+        'user_id', 'balance'
     ];
 }

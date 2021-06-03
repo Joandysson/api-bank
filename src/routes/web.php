@@ -17,8 +17,18 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
+// User
 $router->get('/users', 'UserController@index');
 $router->get('/user/{id}', 'UserController@show');
 $router->post('/user', 'UserController@store');
 $router->put('/user/{id}', 'UserController@update');
 $router->delete('/user/{id}', 'UserController@delete');
+// Account
+$router->get('/accounts', 'AccountController@index');
+$router->get('/account/{id}', 'AccountController@show');
+$router->get('/accountbyuser/{id}', 'AccountController@showByUser');
+$router->post('/account', 'AccountController@store');
+$router->post('/transfer', 'AccountController@transfer');
+$router->put('/deposit', 'AccountController@deposit');
+$router->put('/withdraw', 'AccountController@withdraw');
+$router->delete('/account/{id}', 'AccountController@delete');

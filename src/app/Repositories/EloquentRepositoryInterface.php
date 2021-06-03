@@ -14,6 +14,6 @@ interface EloquentRepositoryInterface
 
    public function find($id): ?Model;
 
-   public function where(array $attributes): ?Model;
+   public function where(array $attributes): ?Collection;
 
 }

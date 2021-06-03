@@ -23,7 +23,7 @@ class UserObserver
      */
     public function creating(User $user)
     {
-        $user = UserUtils::encrypt($user);
+        // $user = UserUtils::encrypt($user);
     }
 
     /**
@@ -34,7 +34,7 @@ class UserObserver
      */
     public function created(User $user)
     {
-        $user = UserUtils::decrypt($user);
+        // $user = UserUtils::decrypt($user);
     }
 
     /**

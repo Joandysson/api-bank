@@ -33,6 +33,7 @@ services:
         build: .
         container_name: php
         # command: bash -c 'php artisan migrate'
+        restart: always
         depends_on:
             - db
             - redis

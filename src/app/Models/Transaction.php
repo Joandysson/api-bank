@@ -8,7 +8,7 @@ class Transaction extends Model
 {
 
     protected $fillable = [
-        'account_id', 'value'
+        'account_id', 'account_to', 'value'
     ];
 
     protected $hidden = [

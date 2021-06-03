@@ -5,7 +5,6 @@ namespace App\Utils;
 use App\Models\User;
 use App\Utils\OpensslUtils;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules\Unique;
 
 trait UserUtils
 {
@@ -61,7 +60,7 @@ trait UserUtils
             $value = OpensslUtils::encrypt($value);
             $data = User::where([$attribute => $value])->get()->first();
             if($data) {
-                $fail($attribute.' already registered.');
+                $fail($attribute.'already registered.');
             }
         };
 
