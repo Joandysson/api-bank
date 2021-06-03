@@ -34,7 +34,7 @@ class UserObserver
      */
     public function created(User $user)
     {
-        //
+        $user = UserUtils::decrypt($user);
     }
 
     /**
@@ -45,7 +45,7 @@ class UserObserver
      */
     public function updating(User $user)
     {
-        //
+        $user = UserUtils::encrypt($user);
     }
 
     /**
@@ -56,7 +56,7 @@ class UserObserver
      */
     public function updated(User $user)
     {
-        //
+        $user = UserUtils::decrypt($user);
     }
 
     /**
@@ -71,6 +71,28 @@ class UserObserver
     }
 
     /**
+     * Handle the User "saving" event.
+     *
+     * @param  \App\Models\User  $user
+     * @return void
+     */
+    public function saving(User $user)
+    {
+        $user = UserUtils::encrypt($user);
+    }
+
+    /**
+     * Handle the User "saved" event.
+     *
+     * @param  \App\Models\User  $user
+     * @return void
+     */
+    public function saved(User $user)
+    {
+        $user = UserUtils::decrypt($user);
+    }
+
+    /**
      * Handle the User "restored" event.
      *
      * @param  \App\Models\User  $user
@@ -78,7 +100,12 @@ class UserObserver
      */
     public function restored(User $user)
     {
-        //
+        $user = UserUtils::decrypt($user);
+    }
+
+    public function retrieved(User $user)
+    {
+        $user = UserUtils::decrypt($user);
     }
 
     /**

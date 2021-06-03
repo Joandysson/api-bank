@@ -5,6 +5,7 @@ namespace App\Utils;
 use App\Models\User;
 use App\Utils\OpensslUtils;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Unique;
 
 trait UserUtils
 {
@@ -12,7 +13,9 @@ trait UserUtils
     {
         if($user['email']) $user['email'] = OpensslUtils::encrypt($user['email']);
         if($user['cpf_cnpj']) $user['cpf_cnpj'] = OpensslUtils::encrypt($user['cpf_cnpj']);
-        if($user['password']) $user['password'] = Hash::make($user['password']);
+        if($user['password'] && Hash::info($user['password'])['algoName'] !== 'bcrypt') {
+            $user['password'] = Hash::make($user['password']);
+        }
 
         return $user;
     }
@@ -20,21 +23,23 @@ trait UserUtils
     public static function decrypt(User|array $user)
     {
         $email = OpensslUtils::decrypt($user['email']);
-        $cpf = OpensslUtils::decrypt($user['cpf']);
+        $cpf = OpensslUtils::decrypt($user['cpf_cnpj']);
 
         $user['email'] = $email ? $email : $user['email'];
-        $user['cpf'] = $cpf ? $cpf : $user['cpf'];
+        $user['cpf_cnpj'] = $cpf ? $cpf : $user['cpf_cnpj'];
 
         return $user;
     }
 
 
-    private static function cpfCnpjRules(array $rules = []) {
-        $validCpfCnpj = function ($attribute, $value, $fail) {
+    private static function cpfCnpjRules(array $rules = [], bool $unique = false) {
+        $validCpfCnpj = function ($attribute, $value, $fail) use ($unique) {
             $regex = '/(^\d{3}\d{3}\d{3}\d{2}$)|(^\d{2}\d{3}\d{3}\d{4}\d{2}$)/';
             if(!preg_match($regex, $value)) {
                 $fail($attribute.' is invalid.');
             }
+
+            if(!$unique) return;
 
             $value = OpensslUtils::encrypt($value);
             $data = User::where([$attribute => $value])->get()->first();
@@ -48,11 +53,13 @@ trait UserUtils
         return $rules;
     }
 
-    private static function emailRules(array $rules = []){
-        $validEmailUnique = function ($attribute, $value, $fail) {
+    private static function emailRules(array $rules = [], bool $unique = false){
+        $validEmailUnique = function ($attribute, $value, $fail) use ($unique) {
+
+            if(!$unique) return;
+
             $value = OpensslUtils::encrypt($value);
             $data = User::where([$attribute => $value])->get()->first();
-
             if($data) {
                 $fail($attribute.' already registered.');
             }
@@ -66,9 +73,9 @@ trait UserUtils
     public static function storeRules()
     {
         return [
-            'name' => 'required|string|min:10|max:100',
-            'email' => self::emailRules(['required', 'email']),
-            'cpf_cnpj' => self::cpfCnpjRules(['required']),
+            'name' => 'required|string|min:10|max:150',
+            'email' => self::emailRules(['required', 'email'], true),
+            'cpf_cnpj' => self::cpfCnpjRules(['required'], true),
             'password' => 'required',
         ];
     }
@@ -76,9 +83,9 @@ trait UserUtils
     public static function updateRules()
     {
         return [
-            'name' => 'string|min:10|max:100',
-            'email' => 'email|unique:clients',
-            'cpf' => 'digits:11'
+            'name' => 'string|min:10|max:150',
+            'email' => self::emailRules(['email']),
+            'cpf_cnpj' => self::cpfCnpjRules(),
         ];
     }
 
@@ -90,8 +97,7 @@ trait UserUtils
             'email.required' => 'Email is required!',
             'email.email' => 'Email is invalid!',
 
-            'cpf.required' =>  'CPF is required!',
-            'cpf.digits' =>  'CPF does not contain eleven digits!',
+            'cpf_cnpj.required' =>  'CPF_CNPJ is required!',
 
             'name.string' => 'Name is not string!',
             'name.min' => 'Name contain less than ten digits!',

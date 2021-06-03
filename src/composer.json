@@ -3,6 +3,12 @@
     "description": "The Laravel Lumen Framework.",
     "keywords": ["framework", "laravel", "lumen"],
     "license": "MIT",
+    "authors": [
+        {
+            "name": "Joandyssn Gama",
+            "email": "joandysson.gama@gmail.com"
+        }
+    ],
     "type": "project",
     "require": {
         "php": "^7.3|^8.0",
