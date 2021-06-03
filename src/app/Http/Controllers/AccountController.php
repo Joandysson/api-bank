@@ -100,6 +100,10 @@ class AccountController extends Controller
         if (!$accountData) return response()->json(['message' => 'account not found'], 404);
         if (!$accountToData) return response()->json(['message' => 'account_to not found'], 404);
 
+        $user = $this->user->find($accountData->user_id);
+
+        if (strlen($user->cpf_cnpj) === 14) return response()->json(['message' => 'this account cannot transfer'], 401);
+
         if ($accountData->balance < $request->value) return response()->json(['message' => 'insufficient funds'], 401);
 
         $account = $this->account->transfer($request->account, $request->account_to, $request->value);
