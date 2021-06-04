@@ -11,9 +11,11 @@ use Illuminate\Database\Eloquent\Model;
 interface EloquentRepositoryInterface
 {
    public function create(array $attributes): Model;
-
    public function find($id): ?Model;
-
    public function where(array $attributes): ?Collection;
+   public function beginTransaction(): void;
+   public function commit(): void;
+   public function rollBack(): void;
+
 
 }

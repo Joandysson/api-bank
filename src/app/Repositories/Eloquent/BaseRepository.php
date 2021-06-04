@@ -5,15 +5,13 @@ namespace App\Repositories\Eloquent;
 use App\Repositories\EloquentRepositoryInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 class BaseRepository implements EloquentRepositoryInterface
 {
-
-    protected $model;
-
-    public function __construct(Model $model)
+    public function __construct(protected Model $model)
     {
-        $this->model = $model;
+        //
     }
 
     public function create(array $attributes): Model
@@ -45,4 +43,21 @@ class BaseRepository implements EloquentRepositoryInterface
     {
         return $this->model->delete();
     }
+
+    public function beginTransaction(): void
+    {
+        DB::beginTransaction();
+    }
+    public function commit(): void
+    {
+        DB::commit();
+    }
+    public function rollBack(): void
+    {
+        DB::rollBack();
+    }
+
+
+
+
 }

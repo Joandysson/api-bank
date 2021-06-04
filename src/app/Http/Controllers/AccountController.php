@@ -9,18 +9,12 @@ use Illuminate\Http\Request;
 
 class AccountController extends Controller
 {
-    protected $account;
-    protected $user;
-    protected $transaction;
-
     public function __construct(
-        UserRepositoryInterface $user,
-        AccountRepositoryInterface $account,
-        TransactionRepository $transaction
+        protected UserRepositoryInterface $user,
+        protected AccountRepositoryInterface $account,
+        protected TransactionRepository $transaction,
     ) {
-        $this->user = $user;
-        $this->account = $account;
-        $this->transaction = $transaction;
+        //
     }
 
     function index()
@@ -54,12 +48,20 @@ class AccountController extends Controller
 
         if (!$accountData) return response()->json(['message' => 'account not found'], 404);
 
+        $this->account->beginTransaction();
+        try {
         $account = $this->account->deposit($request->account_id, $request->value);
         $this->transaction->create([
             'account_id' => $request->account_id,
             'value' => $request->value
         ]);
 
+        $this->account->commit();
+
+    } catch (\Throwable $e) {
+        $this->account->rollBack();
+        return response()->json(['message' => 'Oops, there was an error with your deposit'], 500);
+    }
 
         return response()->json($account);
     }
@@ -73,11 +75,21 @@ class AccountController extends Controller
 
         if ($accountData->balance < $request->value) return response()->json(['message' => 'insufficient funds'], 401);
 
-        $account = $this->account->withdraw($request->account_id, $request->value);
-        $this->transaction->create([
-            'account_id' => $request->account_id,
-            'value' => -$request->value
-        ]);
+        $this->account->beginTransaction();
+        try {
+            $account = $this->account->withdraw($request->account_id, $request->value);
+            $this->transaction->create([
+                'account_id' => $request->account_id,
+                'value' => -$request->value
+            ]);
+
+            $this->account->commit();
+
+        } catch (\Throwable $e) {
+            $this->account->rollBack();
+            return response()->json(['message' => 'Oops, there was an error with your withdrawal'], 500);
+        }
+
 
         return response()->json($account);
     }
@@ -106,14 +118,28 @@ class AccountController extends Controller
 
         if ($accountData->balance < $request->value) return response()->json(['message' => 'insufficient funds'], 401);
 
-        $account = $this->account->transfer($request->account, $request->account_to, $request->value);
-        $this->transaction->create([
-            'account_id' => $request->account,
-            'account_to' => $request->account_to,
-            'value' => $request->value
-        ]);
 
-        return response()->json($account);
+        $this->account->beginTransaction();
+        try{
+
+            $account = $this->account->transfer($request->account, $request->account_to, $request->value);
+            $this->transaction->create([
+                'account_id' => $request->account,
+                'account_to' => $request->account_to,
+                'value' => $request->value
+            ]);
+
+            if(!$account) {
+                $this->account->rollBack();
+            }
+
+            $this->account->commit();
+            return response()->json($account);
+        }catch(\Exception $e) {
+            $this->account->rollBack();
+            return response()->json(['message' => 'Unable to transfer'], 500);
+        }
+
     }
 
     function show(int $id)

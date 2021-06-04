@@ -32,3 +32,5 @@ $router->post('/transfer', 'AccountController@transfer');
 $router->put('/deposit', 'AccountController@deposit');
 $router->put('/withdraw', 'AccountController@withdraw');
 $router->delete('/account/{id}', 'AccountController@delete');
+// Transaction
+$router->get('/transactions', 'AccountController@index');

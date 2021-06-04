@@ -5,7 +5,6 @@ namespace App\Repositories\Eloquent;
 use App\Models\Account;
 use App\Repositories\AccountRepositoryInterface;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
 
 class AccountRepository extends BaseRepository implements AccountRepositoryInterface
 {
@@ -41,17 +40,12 @@ class AccountRepository extends BaseRepository implements AccountRepositoryInter
     public function transfer(int $fromId, int $toId, float $value): ?Model
     {
         try {
-            DB::beginTransaction();
-
             $from = $this->withdraw($fromId, $value);
             $this->deposit($toId, $value);
 
-            DB::commit();
-
             return $from;
-        } catch (\Throwable $th) {
-            DB::rollBack();
 
+        } catch (\Throwable $th) {
             return null;
         }
 

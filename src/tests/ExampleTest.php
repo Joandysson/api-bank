@@ -2,6 +2,7 @@
 
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ExampleTest extends TestCase
 {
@@ -13,7 +14,6 @@ class ExampleTest extends TestCase
     public function testExample()
     {
         $this->get('/');
-
         $this->assertEquals(
             $this->app->version(), $this->response->getContent()
         );

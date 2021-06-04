@@ -16,4 +16,8 @@ interface AccountRepositoryInterface
    public function transfer(int $fromId, int $toId, float $value): ?Model;
    public function update(array $attributes = [], array $options = []): bool;
    public function delete(): bool|null;
+
+   public function beginTransaction(): void;
+   public function commit(): void;
+   public function rollBack(): void;
 }
