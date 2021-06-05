@@ -1,5 +1,7 @@
 <?php
 
+namespace Tests;
+
 use App\Models\User;
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use App\Utils\OpensslUtils;

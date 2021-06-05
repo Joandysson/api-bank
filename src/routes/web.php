@@ -29,8 +29,8 @@ $router->get('/account/{id}', 'AccountController@show');
 $router->get('/accountbyuser/{id}', 'AccountController@showByUser');
 $router->post('/account', 'AccountController@store');
 $router->post('/transfer', 'AccountController@transfer');
-$router->put('/deposit', 'AccountController@deposit');
-$router->put('/withdraw', 'AccountController@withdraw');
+$router->post('/deposit', 'AccountController@deposit');
+$router->post('/withdraw', 'AccountController@withdraw');
 $router->delete('/account/{id}', 'AccountController@delete');
 // Transaction
 $router->get('/transactions', 'AccountController@index');
