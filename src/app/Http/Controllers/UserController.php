@@ -43,15 +43,16 @@ class UserController extends Controller
 
         $requestData = $request->all();
 
-        $checked = Hash::check($requestData['password_current'], $data['password']);
-
-        if(!$checked) return response()->json(['messege' => 'password_current invalid'], 401);
+        if(isset($requestData['password_current']) && isset($data['password'])){
+            $checked = Hash::check($requestData['password_current'], $data['password']);
+            if(!$checked) return response()->json(['messege' => 'password_current invalid'], 401);
+        }
 
         $updated = $this->user->createOrUpdate([
-            'name' => $requestData['name'],
-            'email' => $requestData['email'],
-            'cpf_cnpj' => $requestData['cpf_cnpj'],
-            'password' => $requestData['password_new']
+            'name' => $requestData['name'] ?? null,
+            'email' => $requestData['email'] ?? null,
+            'cpf_cnpj' => $requestData['cpf_cnpj'] ?? null,
+            'password' => $requestData['password_new'] ?? null
         ], $data->id);
 
         return response()->json($updated);

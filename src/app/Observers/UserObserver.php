@@ -45,7 +45,7 @@ class UserObserver
      */
     public function updating(User $user)
     {
-        $user = UserUtils::encrypt($user);
+        // $user = UserUtils::encrypt($user);
     }
 
     /**
@@ -56,7 +56,7 @@ class UserObserver
      */
     public function updated(User $user)
     {
-        $user = UserUtils::decrypt($user);
+        // $user = UserUtils::decrypt($user);
     }
 
     /**
