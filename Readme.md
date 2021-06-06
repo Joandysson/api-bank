@@ -18,7 +18,7 @@ Os testes foram realizados de forma automatica e com o Postman.
 
 ### Informações adicionais
 
-Dentro do diretorio raiz tem um arquivo JSON com os testes realizdos um com o postman, caso tenha um postamn é somente importar e utilizar, também é possivel desfruitar da documentação que o próprio postman fornece.
+Dentro do diretorio raiz tem um arquivo JSON com os testes realizdos um com o postman, caso tenha um postman é somente importar e utilizar, também é possivel desfrutar da documentação que o próprio postman fornece.
 
 - JSON postman
 > API Bank - PHP.postman_collection
@@ -81,13 +81,6 @@ O projeto se encontra disponível na porta **80**
     + Body
 
           [
-            {
-                "name": "test one5 ops",
-                "email": "test@one9.com.br",
-                "cpf_cnpj": "01359785633",
-                "created_at": 2021-01-01,
-                "updated_at": 2021-01-01
-            },
             {
                 "name": "test one5 ops",
                 "email": "test@one9.com.br",
@@ -494,3 +487,6 @@ docker exec -it php bash
 ## Rodar testes
 php vendor/phpunit/phpunit/phpunit
 ```
+
+
+> by Joandysson Gama
