@@ -6,6 +6,7 @@ Os testes foram realizados de forma automatica e com o Postman.
 #### Tecnologias utilizadas no projeto
 
 - [X] PHP 8
+- [X] Framework Lumen 8
 - [X] Mysql
 - [X] Redis
 - [X] Testes
