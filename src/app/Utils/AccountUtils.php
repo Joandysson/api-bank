@@ -4,10 +4,8 @@ namespace App\Utils;
 
 use App\Models\Account;
 use App\Models\User;
-use App\Utils\OpensslUtils;
-use Illuminate\Support\Facades\Hash;
 
-trait UserUtils
+trait AccountUtils
 {
     private static function validUser(array $rules = []) {
         $validUser = function ($attribute, $value, $fail) {

@@ -6,6 +6,7 @@ use App\Repositories\AccountRepositoryInterface;
 use App\Repositories\Eloquent\TransactionRepository;
 use App\Repositories\UserRepositoryInterface;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redis;
 
 class AccountController extends Controller
 {
@@ -25,7 +26,12 @@ class AccountController extends Controller
     function store(Request $request)
     {
         $this->validate($request, ['user_id' => 'required|integer']);
-        $userData = $this->user->find($request->user_id);
+
+        $userData = Redis::get("user:id:{$request->user_id}");
+        if(!$userData) {
+            $userData = $this->user->find($request->user_id);
+        }
+
         if (!$userData) return response()->json(['message' => 'user not found'], 404);
 
         $accountData = $this->account->where(['user_id' => $request->user_id]);
@@ -34,6 +40,7 @@ class AccountController extends Controller
 
         try {
             $account = $this->account->create($request->all());
+            $userData = Redis::set("account:id:{$account->id}", $account->id);
 
             return response()->json($account, 201);
         } catch (\Exception $e) {
@@ -44,7 +51,8 @@ class AccountController extends Controller
     function deposit(Request $request)
     {
         $this->validate($request, ['value' => 'required|numeric|min:0.01', 'account_id' => 'required|integer']);
-        $accountData = $this->account->find($request->account_id);
+
+        $accountData = $this->verifyAccount($request->account_id);
 
         if (!$accountData) return response()->json(['message' => 'account not found'], 404);
 
@@ -58,7 +66,7 @@ class AccountController extends Controller
 
         $this->account->commit();
 
-    } catch (\Throwable $e) {
+    } catch (\Exception $e) {
         $this->account->rollBack();
         return response()->json(['message' => 'Oops, there was an error with your deposit'], 500);
     }
@@ -71,9 +79,9 @@ class AccountController extends Controller
         $this->validate($request, ['value' => 'required|numeric|min:0.01', 'account_id' => 'required|integer']);
         $accountData = $this->account->find($request->account_id);
 
-        if (!$accountData) return response()->json(['message' => 'account not found'], 404);
+        if(!$accountData) return response()->json(['message' => 'account not found'], 404);
 
-        if ($accountData->balance < $request->value) return response()->json(['message' => 'insufficient funds'], 401);
+        if($accountData->balance < $request->value) return response()->json(['message' => 'insufficient funds'], 401);
 
         $this->account->beginTransaction();
         try {
@@ -85,7 +93,7 @@ class AccountController extends Controller
 
             $this->account->commit();
 
-        } catch (\Throwable $e) {
+        } catch (\Exception $e) {
             $this->account->rollBack();
             return response()->json(['message' => 'Oops, there was an error with your withdrawal'], 500);
         }
@@ -145,6 +153,9 @@ class AccountController extends Controller
     function show(int $id)
     {
         $data = $this->account->find($id);
+
+        if(empty($data)) return response()->json(['messege' => 'Account not found'], 404);
+
         return response()->json($data);
     }
 
@@ -159,6 +170,18 @@ class AccountController extends Controller
     function delete($id)
     {
         $data = $this->account->find($id)?->delete();
+
+        if($data) Redis::del("account:id:{$id}");
+
         return response()->json($data);
+    }
+
+
+    function verifyAccount($id) {
+        $accountData = Redis::get("account:id:{$id}");
+        if(!$accountData) {
+            $accountData = $this->account->find($id);
+        }
+        return $accountData;
     }
 }

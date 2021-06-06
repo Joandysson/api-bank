@@ -12,7 +12,7 @@ class AccountTest extends TestCase
     /** @test */
     public function check_status_http_of_invalid_user_in_the_create_account()
     {
-        $this->post('/account', ['user_id' => rand(0, 9)])->assertResponseStatus(404);
+        $this->post('/account', ['user_id' => rand(100, 200)])->assertResponseStatus(404);
     }
 
     /** @test */

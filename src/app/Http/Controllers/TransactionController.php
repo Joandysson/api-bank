@@ -3,9 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Repositories\Eloquent\TransactionRepository;
-use Illuminate\Http\Request;
 
-class AccountController extends Controller
+class TransactionController extends Controller
 {
     public function __construct(
         protected TransactionRepository $transaction,

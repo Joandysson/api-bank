@@ -6,6 +6,7 @@ use App\Repositories\UserRepositoryInterface;
 use App\Utils\UserUtils;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Redis;
 
 class UserController extends Controller
 {
@@ -27,6 +28,8 @@ class UserController extends Controller
 
         try {
             $data = $this->user->save($request->all());
+            Redis::set("user:id:{$data->id}", $data->id);
+
             return response()->json($data, 201);
         } catch (\Exception $e) {
             return response()->json(['messege' => $e->getMessage()], 500);
@@ -61,12 +64,17 @@ class UserController extends Controller
     function show(int $id)
     {
         $data = $this->user->find($id);
+
+        if(empty($data)) return response()->json(['messege' => 'User not found'], 404);
+
         return response()->json($data);
     }
 
     function delete($id)
     {
         $data = $this->user->find($id)?->delete();
+        if($data) Redis::del("user:id:{$id}");
+
         return response()->json($data);
     }
 }

@@ -24,8 +24,8 @@ class TransactionsTable extends Migration
             $table->unsignedBigInteger('account_to')->nullable();
             $table->timestamps();
             $table->softDeletes();
-            $table->foreign('account_id')->references('id')->on('accounts');
-            $table->foreign('account_to')->references('id')->on('accounts');
+            $table->foreign('account_id')->references('id')->on('accounts')->onDelete('cascade');;
+            $table->foreign('account_to')->references('id')->on('accounts')->onDelete('cascade');;
         });
     }
 
