@@ -73,6 +73,9 @@ class UserController extends Controller
     function delete($id)
     {
         $data = $this->user->find($id)?->delete();
+
+        if(empty($data)) return response()->json(['messege' => 'User not found'], 404);
+
         if($data) Redis::del("user:id:{$id}");
 
         return response()->json($data);

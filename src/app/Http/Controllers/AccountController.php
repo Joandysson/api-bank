@@ -170,6 +170,7 @@ class AccountController extends Controller
     function delete($id)
     {
         $data = $this->account->find($id)?->delete();
+        if(empty($data)) return response()->json(['messege' => 'Account not found'], 404);
 
         if($data) Redis::del("account:id:{$id}");
 

@@ -10,7 +10,7 @@ WORKDIR /var/www/html/api
 COPY ./src/composer.json ./
 COPY ./src/composer.lock ./
 
-RUN composer install --no-scripts --no-autoloader
+RUN composer install --no-scripts --no-autoloader && composer clear-cache
 
 COPY ./src ./
 

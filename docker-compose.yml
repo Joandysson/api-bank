@@ -33,7 +33,9 @@ services:
     php:
         build: .
         container_name: php
-        # command: bash -c 'php artisan migrate'
+        # command: bash -c 'php artisan migrate:refresh'
+        # command:
+        #     - php artisan migrate
         restart: always
         depends_on:
             - db
